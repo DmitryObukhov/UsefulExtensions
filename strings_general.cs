@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*-----------------------------------------------------------------------------------------------------------
+
+             _   _ ____  _____ _____ _   _ _       _______  _______ _____ _   _ ____ ___ ___  _   _ ____
+            | | | / ___|| ____|  ___| | | | |     | ____\ \/ /_   _| ____| \ | / ___|_ _/ _ \| \ | / ___|
+            | | | \___ \|  _| | |_  | | | | |     |  _|  \  /  | | |  _| |  \| \___ \| | | | |  \| \___ \
+            | |_| |___) | |___|  _| | |_| | |___  | |___ /  \  | | | |___| |\  |___) | | |_| | |\  |___) |
+             \___/|____/|_____|_|    \___/|_____| |_____/_/\_\ |_| |_____|_| \_|____/___\___/|_| \_|____/
+
+    Useful extensions is a public project to extend functionality of standard C# classes with most frequently
+    used functions. 
+
+
+
+-----------------------------------------------------------------------------------------------------------*/
+using System;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +23,35 @@ using System.Threading.Tasks;
 
 namespace UsefulExtensions
 {
+
+    public static class Strings
+    {
+        public const string whitespace = " \t\n\r\v\f";
+        public const string lowercase = "abcdefghijklmnopqrstuvwxyz";
+        public const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        public const string letters = lowercase + uppercase;
+        public const string ascii_lowercase = lowercase;
+        public const string ascii_uppercase = uppercase;
+        public const string ascii_letters = ascii_lowercase + ascii_uppercase;
+        public const string digits = "0123456789";
+        public const string hexdigits = digits + "abcdef" + "ABCDEF";
+        public const string octdigits = "01234567";
+        public const string punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+        public const string printable = digits + letters + punctuation + whitespace;
+    }
+
     public static class StringGeneralExtensions
     {
 
-        // Prepare string to be used in SQL request string
+        /// <summary>
+        ///  This function prepares string to be used in SQL request string:
+        /// <list type="bullet">
+        /// <item><description>escape special characters</description></item>
+        /// <item><description>add ' to be used in SQL request</description></item>
+        /// </list>
+        /// </summary>
+        /// <param name="strVariable">string variable</param>
+        /// <example>table.Select("Column = "+"xyz".SQL());</example>
         public static string SQL(this string strVariable)
         {
             StringBuilder sb = new StringBuilder(strVariable.Length);
