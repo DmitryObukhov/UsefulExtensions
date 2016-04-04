@@ -127,6 +127,19 @@ namespace UsefulExtensions
             return strVariable.Random(length, strVariable, 0);
         }
 
+        public static string TimeStamp(this string strVariable, string separator="")
+        {
+            DateTime now = DateTime.Now;
+            string timestamp = "";
+            timestamp = timestamp + now.Year.ToString("d04")+ separator;
+            timestamp = timestamp + now.Month.ToString("d02") + separator;
+            timestamp = timestamp + now.Day.ToString("d02") + separator;
+            timestamp = timestamp + now.Hour.ToString("d02") + separator;
+            timestamp = timestamp + now.Minute.ToString("d02") + separator;
+            timestamp = timestamp + now.Second.ToString("d02") + separator;
+            timestamp = timestamp + now.Millisecond.ToString("d04");
+            return timestamp;
+        }
 
 
     }

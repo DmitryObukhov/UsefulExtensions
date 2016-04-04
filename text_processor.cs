@@ -85,6 +85,101 @@ namespace UsefulExtensions
             }
         }
 
+        public int SearchForward(string pattern, int startIdx=0)
+        {
+            int idx = startIdx;
+            while (idx < text.Count)
+            {
+                string cur = text[idx];
+                if (Regex.IsMatch(cur, pattern))
+                {
+                    return idx;
+                }
+                idx++;
+            }
+            return -1;
+        }
 
+        public string this[int idx]
+        {
+            get
+            {
+                return text[idx];
+            }
+            set
+            {
+                text[idx] = value;
+            }
+        }
+
+
+        public string[] FindAndParse(string pattern, string delimiter)
+        {
+            int lineIdx = SearchForward(pattern);
+            if (lineIdx > 0)
+            {
+                string di = text[lineIdx];
+                string[] elements = Regex.Split(di, delimiter);
+                return elements;
+            } else
+            {
+                return null;
+            }
+
+        }
+
+
+        public void Add(string newLine)
+        {
+            text.Add(newLine);
+        }
+
+
+
+        public int SearchBackward(string pattern, int startIdx = 0)
+        {
+            int idx = text.Count-1;
+            if (startIdx > 0)
+            {
+                idx = startIdx;
+            }
+            while (idx >= 0)
+            {
+                string cur = text[idx];
+                if (Regex.IsMatch(cur, pattern))
+                {
+                    return idx;
+                }
+                idx--;
+            }
+            return -1;
+        }
+
+        public List<int> FindAll(string pattern, int startIdx = -1, int stopIdx = -1)
+        {
+            if (startIdx<0)
+            {
+                startIdx = 0;
+            }
+            if (stopIdx<0)
+            {
+                stopIdx = text.Count;
+            }
+            List<int> retVal = new List<int>();
+            int idx = startIdx;
+            while (idx > startIdx)
+            {
+                string cur = text[idx];
+                if (Regex.IsMatch(cur, pattern))
+                {
+                    retVal.Add(idx);
+                }
+                idx++;
+            }
+            return retVal;
+        }
+
+
+
+        }
     }
-}
