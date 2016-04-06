@@ -54,12 +54,13 @@ namespace UsefulExtensions
             return true;
         }
 
-        public void CreateTempDirectory()
+        public string CreateTempDirectory()
         {
             string tempPath = Path.GetTempPath();
             string tempName = "".TimeStamp("-") + "__" + Strings.lowercase.Random(8);
-            _tempDir = tempPath + "\\" + tempName;
+            _tempDir = tempPath + tempName;
             Directory.CreateDirectory(_tempDir);
+            return _tempDir;
         }
 
         public void CleanTempDirectory(string FolderName = "")
