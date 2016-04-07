@@ -11,6 +11,41 @@ using System.Reflection;
 
 namespace UsefulExtensions
 {
+    public static class TypeInfo
+    {
+        public static Type[] NumericTypes = new Type[] {
+                            typeof(Byte),
+                            typeof(Decimal),
+                            typeof(Double),
+                            typeof(Int16),
+                            typeof(Int32),
+                            typeof(Int64),
+                            typeof(SByte),
+                            typeof(Single),
+                            typeof(UInt16),
+                            typeof(UInt32),
+                            typeof(UInt64)};
+
+        public static Type[] IntegerTypes = new Type[] {
+                            typeof(Byte),
+                            typeof(Int16),
+                            typeof(Int32),
+                            typeof(Int64),
+                            typeof(SByte),
+                            typeof(UInt16),
+                            typeof(UInt32),
+                            typeof(UInt64)};
+
+        public static Type[] SignedTypes = new Type[] {
+                            typeof(Int16),
+                            typeof(Int32),
+                            typeof(Int64),
+                            typeof(SByte)};
+
+    }
+
+
+
     public static class TableGeneralExtensions
     {
 
@@ -23,7 +58,7 @@ namespace UsefulExtensions
             }
         }
 
-        public static void FromObject<T>(this System.Data.DataTable source, T objectInstance)
+        public static void FromObject<T>(this DataTable source, T objectInstance)
         {
             source.Clear();
             foreach (PropertyInfo info in typeof(T).GetProperties())
@@ -82,14 +117,14 @@ namespace UsefulExtensions
             return result.ToString();
         }
 
-        public static string WriteCSV(this System.Data.DataTable table, string fileName)
+        public static string WriteCSV(this DataTable table, string fileName)
         {
             string result = table.ToCSV();
             System.IO.File.WriteAllText(fileName, result.ToString());
             return result;
         }
 
-        public static bool IsNumericColumn(this System.Data.DataTable table, string colname)
+        public static bool IsNumericColumn(this DataTable table, string colname)
         {
             if (!table.Columns.Contains(colname))
             {
@@ -105,11 +140,21 @@ namespace UsefulExtensions
             return numericTypes.Contains(col.DataType);
         }
 
-
-
-        public static System.Data.DataTable CloneIntToDouble(this System.Data.DataTable source)
+        public static bool IsNumeric(this DataColumn col)
         {
-            System.Data.DataTable retVal = new System.Data.DataTable();
+            if (col == null)
+                return false;
+            // Make this const
+            var numericTypes = new[] {  typeof(Byte), typeof(Decimal), typeof(Double),
+                                        typeof(Int16), typeof(Int32), typeof(Int64), typeof(SByte),
+                                        typeof(Single), typeof(UInt16), typeof(UInt32), typeof(UInt64)};
+            return numericTypes.Contains(col.DataType);
+        }
+
+
+        public static DataTable CloneIntToDouble(this DataTable source)
+        {
+            DataTable retVal = new DataTable();
             foreach (DataColumn dc in source.Columns)
             {
                 if (dc.DataType == typeof(int))
@@ -128,9 +173,9 @@ namespace UsefulExtensions
             return retVal;
         }
 
-        public static System.Data.DataTable CloneAllToString(this System.Data.DataTable source)
+        public static System.Data.DataTable CloneAllToString(this DataTable source)
         {
-            System.Data.DataTable retVal = new System.Data.DataTable();
+            DataTable retVal = new DataTable();
             foreach (DataColumn dc in source.Columns)
             {
                 retVal.Columns.Add(dc.ColumnName, typeof(string));
@@ -141,6 +186,152 @@ namespace UsefulExtensions
             }
             return retVal;
         }
+
+
+
+        public static DateTime GetEarliest(this System.Data.DataTable table, string dateTimeColumnName, int idx)
+        {
+            List<string> sStrings = table.AsEnumerable().Select(x => x[dateTimeColumnName].ToString()).ToList();
+            sStrings.SortAndClean();
+            List<DateTime> s = sStrings.ConvertAll(x => Convert.ToDateTime(x));
+            s.Sort();
+            if (s.Count > idx)
+            {
+                return s[idx];
+            }
+            else if (s.Count > 0)
+            {
+                return s[0];
+
+            }
+            return DateTime.MaxValue;
+        }
+
+        public static DateTime GetEarliest(this System.Data.DataTable table, string dateTimeColumnName)
+        {
+            return GetEarliest(table, dateTimeColumnName, 0);
+        }
+
+
+        public static DateTime GetLatest(this System.Data.DataTable table, string dateTimeColumnName, int idx)
+        {
+            List<string> sStrings = table.AsEnumerable().Select(x => x[dateTimeColumnName].ToString()).ToList();
+            sStrings.SortAndClean();
+            List<DateTime> s = sStrings.ConvertAll(x => Convert.ToDateTime(x));
+            s.Sort();
+            if (s.Count > idx)
+            {
+                return s[s.Count - 1 - idx];
+            }
+            else if (s.Count > 0)
+            {
+                return s[s.Count - 1];
+
+            }
+            return DateTime.MaxValue;
+        }
+
+
+        public static DateTime GetLatest(this System.Data.DataTable table, string dateTimeColumnName)
+        {
+            return GetLatest(table, dateTimeColumnName, 0);
+        }
+
+
+        public static System.Data.DataTable CloneSelectedRows(this System.Data.DataTable source, string selector, string sort)
+        {
+            DataRow[] selection = source.Select(selector, sort);
+            System.Data.DataTable retVal = selection.CopyToDataTable();
+            return retVal;
+        }
+
+        public static System.Data.DataTable CloneSelectedRows(this System.Data.DataTable source, string selector)
+        {
+            DataRow[] selection;
+            try
+            {
+                selection = source.Select(selector);
+            }
+            catch
+            {
+                return null;
+            }
+            System.Data.DataTable retVal = selection.CopyToDataTable();
+            return retVal;
+        }
+
+        public static int CountRows(this System.Data.DataTable source, string selector)
+        {
+            DataRow[] selection = source.Select(selector);
+            return selection.Count();
+        }
+
+        public static Dictionary<string, int> CountValues(this System.Data.DataTable source, string column)
+        {
+            Dictionary<string, int> retVal = new Dictionary<string, int>();
+            foreach (DataRow row in source.Rows)
+            {
+                string key = row[column].ToString();
+                if (retVal.Keys.Contains(key))
+                {
+                    retVal[key]++;
+                }
+                else
+                {
+                    retVal.Add(key, 1);
+                }
+            }
+            return retVal;
+        }
+
+
+        public static Dictionary<string, int> CountValues(this System.Data.DataTable source, string column, params string[] expectedValues)
+        {
+            Dictionary<string, int> retVal = CountValues(source, column);
+            foreach (string templateStr in expectedValues)
+            {
+                if (!retVal.Keys.Contains(templateStr))
+                {
+                    retVal.Add(templateStr, 0);
+                }
+            }
+            return retVal;
+        }
+
+
+        public static List<string> ListOfDistinctValues(this System.Data.DataTable table, string columnName)
+        {
+            DataView filter = new DataView(table);
+            System.Data.DataTable ListOfValues = filter.ToTable(true, columnName);
+            List<string> returnList = ListOfValues.AsEnumerable().Select(x => x[0].ToString()).ToList();
+            return returnList;
+        }
+
+
+        public static int FindFirst(this System.Data.DataTable table, int columnIdx, object cellValue)
+        {
+            for (int idx = 0; idx < table.Rows.Count; idx++)
+            {
+                if (table.Rows[idx][columnIdx].Equals(cellValue))
+                {
+                    return idx;
+                }
+            }
+            return -1;
+        }
+
+        public static int FindFirst(this System.Data.DataTable table, string columnIdx, object cellValue)
+        {
+            for (int idx = 0; idx < table.Rows.Count; idx++)
+            {
+                if (table.Rows[idx][columnIdx].Equals(cellValue))
+                {
+                    return idx;
+                }
+            }
+            return -1;
+        }
+
 
     }
 

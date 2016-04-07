@@ -9,7 +9,8 @@
     Useful extensions is a public project to extend functionality of standard C# classes with most frequently
     used functions. 
 
-
+    Project home
+    https://github.com/DmitryObukhov/UsefulExtensions
 
 -----------------------------------------------------------------------------------------------------------*/
 using System;
@@ -96,6 +97,12 @@ namespace UsefulExtensions
             return retVal;
         }
 
+        public static string SS(this DateTime dateVal)
+        {
+            return "#" + dateVal.ToShortDateString() + "#";
+        }
+
+
         public static string MD5str(this string strVariable)
         {
             MD5 md5Hash = MD5.Create();
@@ -141,6 +148,56 @@ namespace UsefulExtensions
             return timestamp;
         }
 
+
+    }
+
+
+    public class StringCounter
+    {
+        private Dictionary<string, int> values;
+        public StringCounter()
+        {
+            values = new Dictionary<string, int>();
+        }
+        public StringCounter(string[] mandatoryValues)
+        {
+            values = new Dictionary<string, int>();
+            foreach (string x in mandatoryValues)
+            {
+                values.Add(x, 0);
+            }
+        }
+        public int AddCount(string x, int n)
+        {
+            if (values.Keys.Contains(x))
+            {
+                values[x] += n;
+            }
+            else
+            {
+                values.Add(x, n);
+            }
+            return values[x];
+        }
+
+        public int AddCount(string x)
+        {
+            return AddCount(x, 1);
+        }
+
+        public int GetCount(string x)
+        {
+            if (!values.Keys.Contains(x))
+            {
+                return 0;
+            }
+            return values[x];
+        }
+
+        public Dictionary<string, int> GetAllCounters(string x)
+        {
+            return values;
+        }
 
     }
 
