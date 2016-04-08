@@ -46,7 +46,73 @@ namespace UsefulExtensions
             }
         }
 
+        public static object FindApproximate<TValue>(Dictionary<string, TValue> source, string keyORpattern)
+        {
+            List<string> keys = source.Keys.ToList();
+            if (keys==null || keys.Count == 0 )
+            {
+                return null;
+            } else
+            {
+                if (keys.Contains(keyORpattern))
+                {
+                    return source[keyORpattern];
+                } else
+                {
+                    foreach (string k in keys)
+                    {
+                        if (Regex.IsMatch(k, keyORpattern))
+                        {
+                            return source[keyORpattern];
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+
     }
 
+    public class Catalogue<T>
+    {
+        internal Dictionary<string, T> store = new Dictionary<string, T>();
+        public Catalogue()
+        {
+        }
 
+        public T this[string index]
+        {
+            get
+            {
+                if (store.Keys.Count == 0)
+                {
+                    return default(T);
+                }
+                if (store.Keys.Contains(index))
+                {
+                    return store[index];
+                }
+                foreach (string k in store.Keys)
+                {
+                    Console.WriteLine(k+" = "+store[k].ToString());
+                    if (Regex.IsMatch(k, index))
+                    {
+                        return store[k];
+                    }
+                }
+                return default(T);
+            }
+            set
+            {
+                if (store.Keys.Contains(index))
+                {
+                    store[index] = value;
+                } else
+                {
+                    store.Add(index, value);
+                }
+            }
+        }
+    }
 }
