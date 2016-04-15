@@ -192,10 +192,18 @@ namespace UsefulExtensions
             DataRow[] selection = source.Select(selector, sortExpression);
             DataTable retVal = source.Clone();
             int idx = 0;
-            while ((Convert.ToDouble(selection[idx][column]) < limit) && idx < selection.Count())
+            bool runFlag = true;
+            while (runFlag)
             {
                 retVal.ImportRow(selection[idx]);
                 idx++;
+                if (idx >= selection.Count())
+                {
+                    runFlag = false;
+                } else if (Convert.ToDouble(selection[idx][column]) > limit)
+                {
+                    runFlag = false;
+                }
             }
             return retVal;
         }
@@ -205,10 +213,19 @@ namespace UsefulExtensions
             DataRow[] selection = source.Select(selector, sortExpression);
             DataTable retVal = source.Clone();
             int idx = 0;
-            while ((Convert.ToDouble(selection[idx][column]) > limit) && idx < selection.Count())
+            bool runFlag = true;
+            while (runFlag)
             {
                 retVal.ImportRow(selection[idx]);
                 idx++;
+                if (idx >= selection.Count())
+                {
+                    runFlag = false;
+                }
+                else if (Convert.ToDouble(selection[idx][column]) < limit)
+                {
+                    runFlag = false;
+                }
             }
             return retVal;
         }
