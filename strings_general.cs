@@ -78,6 +78,23 @@ namespace UsefulExtensions
             return "'" + sb.ToString() + "'";
         }
 
+
+        /// <summary>
+        ///  This function prepares string to be used in SQL request string:
+        /// <list type="bullet">
+        /// <item><description>escape special characters</description></item>
+        /// <item><description>add ' to be used in SQL request</description></item>
+        /// </list>
+        /// </summary>
+        /// <param name="strVariable">string variable</param>
+        /// <example>table.Select("Column = "+"xyz".SQL());</example>
+        public static string QT(this string strVariable)
+        {
+            return "\"" + strVariable + "\"";
+        }
+
+
+
         public static string NoSpace(this string strVariable)
         {
             return Regex.Replace(strVariable, @"\W+", "_");
