@@ -47,11 +47,12 @@ namespace UsefulExtensions
             IWshNetwork_Class network = new IWshNetwork_Class();
             try {
                 network.RemoveNetworkDrive(driveLetter, true, true);
-            } catch
+                network.MapNetworkDrive(driveLetter, networkPath, true);
+            }
+            catch
             {
                 // Nothing
             }
-            network.MapNetworkDrive(driveLetter, networkPath, true);
             return true;
         }
 
