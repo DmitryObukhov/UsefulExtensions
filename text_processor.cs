@@ -41,7 +41,10 @@ namespace UsefulExtensions
         public int Read(string fileName)
         {
             Clear();
-            text = File.ReadAllLines(fileName).ToList();
+            if (File.Exists(fileName))
+            {
+                text = File.ReadAllLines(fileName).ToList();
+            }
             return text.Count;
         }
 
