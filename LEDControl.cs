@@ -107,9 +107,6 @@ namespace UsefulExtensions
             Matrix offsetMatrix = null;
             if (!m_bIsCacheBuild)
             {
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine("Rebuilding cache...");
-#endif
                 DestoryCache();
                 CreateCache(rectBound, bevelRate, segmentWidth, segmentInterval);
             }

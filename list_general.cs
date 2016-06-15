@@ -95,7 +95,7 @@ namespace UsefulExtensions
                 }
                 foreach (string k in store.Keys)
                 {
-                    Console.WriteLine(k+" = "+store[k].ToString());
+                    //Console.WriteLine(k+" = "+store[k].ToString());
                     if (Regex.IsMatch(k, index))
                     {
                         return store[k];

@@ -93,6 +93,17 @@ namespace UsefulExtensions
             return "\"" + strVariable + "\"";
         }
 
+        public static string RemoveLineEndings(this string value, string replacement = " ")
+        {
+            if (String.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+            string lineSeparator = ((char)0x2028).ToString();
+            string paragraphSeparator = ((char)0x2029).ToString();
+
+            return value.Replace("\r\n", replacement).Replace("\n", replacement).Replace("\r", replacement).Replace(lineSeparator, replacement).Replace(paragraphSeparator, replacement);
+        }
 
 
         public static string NoSpace(this string strVariable)

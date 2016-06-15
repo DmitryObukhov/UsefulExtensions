@@ -256,8 +256,14 @@ namespace UsefulExtensions
             {
                 return null;
             }
-            System.Data.DataTable retVal = selection.CopyToDataTable();
-            return retVal;
+            if (selection.Count() > 0)
+            {
+                System.Data.DataTable retVal = selection.CopyToDataTable();
+                return retVal;
+            } else
+            {
+                return null;
+            }
         }
 
         public static int CountRows(this System.Data.DataTable source, string selector)
