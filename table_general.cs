@@ -102,16 +102,30 @@ namespace UsefulExtensions
             var result = new StringBuilder();
             for (int i = 0; i < table.Columns.Count; i++)
             {
-                result.Append(table.Columns[i].ColumnName);
-                result.Append(i == table.Columns.Count - 1 ? "\n" : ",");
+                result.Append("\""+table.Columns[i].ColumnName+"\"");
+                result.Append(i == table.Columns.Count - 1 ? "\n" : "\t");
             }
 
-            foreach (DataRow row in table.Rows)
+            for (int rIdx=0; rIdx < table.Rows.Count; rIdx++)
             {
-                for (int i = 0; i < table.Columns.Count; i++)
+                for (int cIdx = 0; cIdx < table.Columns.Count; cIdx++)
                 {
-                    result.Append(row[i].ToString());
-                    result.Append(i == table.Columns.Count - 1 ? "\n" : ",");
+                    if (table.Columns[cIdx].DataType == typeof(string))
+                    {
+                        result.Append("\""+ table.Rows[rIdx][cIdx].ToString()+"\"");
+                    }
+                    else
+                    {
+                        result.Append(table.Rows[rIdx][cIdx].ToString());
+                    }
+                    if (rIdx< (table.Rows.Count - 1))
+                    {
+                        result.Append(cIdx == table.Columns.Count - 1 ? "\n" : "\t");
+                    }
+                    else
+                    {
+                        result.Append(cIdx == table.Columns.Count - 1 ? "" : "\t");
+                    }
                 }
             }
             return result.ToString();

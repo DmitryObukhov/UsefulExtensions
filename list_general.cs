@@ -71,6 +71,15 @@ namespace UsefulExtensions
             return null;
         }
 
+        public static void AddIfNew<TKey, TValue>(Dictionary<TKey, TValue> source, TKey key, TValue val)
+        {
+            if (!source.Keys.Contains(key))
+            {
+                source.Add(key, val);
+            }
+        }
+
+
 
     }
 
