@@ -182,7 +182,89 @@ namespace UsefulExtensions
             return retVal;
         }
 
-
-
+        public int ReplaceAll(string searchPattern, string replacePattern, int startIdx = -1, int stopIdx = -1)
+        {
+            if (startIdx < 0)
+            {
+                startIdx = 0;
+            }
+            if (stopIdx < 0)
+            {
+                stopIdx = text.Count;
+            }
+            int replacementCount = 0;
+            if (text.Count > 0)
+            {
+                for (int idx = startIdx; idx < stopIdx; idx++)
+                {
+                    string cur = text[idx];
+                    if (Regex.IsMatch(cur, searchPattern))
+                    {
+                        text[idx] = Regex.Replace(text[idx], searchPattern, replacePattern);
+                        replacementCount++;
+                    }
+                }
+            }
+            return replacementCount;
         }
+
+        public TextProcessor Clone(string searchPattern = "", int startIdx = -1, int stopIdx = -1)
+        {
+            if (startIdx < 0)
+            {
+                startIdx = 0;
+            }
+            if (stopIdx < 0)
+            {
+                stopIdx = text.Count;
+            }
+            TextProcessor newTP = new TextProcessor();
+            if (text.Count > 0)
+            {
+                for (int idx = startIdx; idx< stopIdx; idx++)
+                {
+                    if (searchPattern == "")
+                    {
+                        newTP.Add(text[idx]);
+                    } else if (Regex.IsMatch(text[idx], searchPattern))
+                    {
+                        newTP.Add(text[idx]);
+                    }
+                }
+            }
+            return newTP;
+        }
+
+
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string row in text)
+            {
+                sb.AppendLine(row);
+            }
+            return sb.ToString();
+        }
+
+        public string ToSingleString(string lineSeparator)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int idx = 0; idx < text.Count; idx++)
+            {
+                if (idx == (text.Count - 1))
+                {
+                    sb.Append(text[idx]); // Last line, no separator
+                }
+                else
+                {
+                    sb.Append(text[idx] + lineSeparator);
+                }
+                
+            }
+            return sb.ToString();
+        }
+
+
     }
+}
