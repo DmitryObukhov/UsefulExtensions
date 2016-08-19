@@ -97,13 +97,13 @@ namespace UsefulExtensions
 
 
 
-        public static string ToCSV(this System.Data.DataTable table)
+        public static string ToCSV(this System.Data.DataTable table, string delimiter="\t")
         {
             var result = new StringBuilder();
             for (int i = 0; i < table.Columns.Count; i++)
             {
-                result.Append("\""+table.Columns[i].ColumnName+"\"");
-                result.Append(i == table.Columns.Count - 1 ? "\n" : "\t");
+                result.Append("\"" + table.Columns[i].ColumnName + "\"");
+                result.Append(i == table.Columns.Count - 1 ? "\n" : delimiter);
             }
 
             for (int rIdx=0; rIdx < table.Rows.Count; rIdx++)
@@ -114,17 +114,30 @@ namespace UsefulExtensions
                     {
                         result.Append("\""+ table.Rows[rIdx][cIdx].ToString()+"\"");
                     }
+                    //else if (table.Columns[cIdx].DataType == typeof(DateTime))
+                    //{
+                    //    string res = "";
+                    //    try {
+                    //        DateTime dt = Convert.ToDateTime(table.Rows[rIdx][cIdx]);
+                    //        res = "\"" + dt.ToLongDateString() + "\"";
+                    //    }
+                    //    catch
+                    //    {
+                    //        res = "";
+                    //    }
+                    //    result.Append(res);
+                    //}
                     else
                     {
                         result.Append(table.Rows[rIdx][cIdx].ToString());
                     }
                     if (rIdx< (table.Rows.Count - 1))
                     {
-                        result.Append(cIdx == table.Columns.Count - 1 ? "\n" : "\t");
+                        result.Append(cIdx == table.Columns.Count - 1 ? "\n" : delimiter);
                     }
                     else
                     {
-                        result.Append(cIdx == table.Columns.Count - 1 ? "" : "\t");
+                        result.Append(cIdx == table.Columns.Count - 1 ? "" : delimiter);
                     }
                 }
             }
@@ -133,7 +146,7 @@ namespace UsefulExtensions
 
         public static string WriteCSV(this DataTable table, string fileName)
         {
-            string result = table.ToCSV();
+            string result = table.ToCSV(",");
             System.IO.File.WriteAllText(fileName, result.ToString());
             return result;
         }
@@ -321,9 +334,26 @@ namespace UsefulExtensions
 
         public static List<string> ListOfDistinctValues(this System.Data.DataTable table, string columnName)
         {
-            DataView filter = new DataView(table);
-            System.Data.DataTable ListOfValues = filter.ToTable(true, columnName);
-            List<string> returnList = ListOfValues.AsEnumerable().Select(x => x[0].ToString()).ToList();
+            List<string> returnList;
+            if (true)
+            {
+                DataView filter = new DataView(table);
+                System.Data.DataTable ListOfValues = filter.ToTable(true, columnName);
+                returnList = ListOfValues.AsEnumerable().Select(x => x[0].ToString()).ToList();
+            }
+            else
+            {
+                List<object> rawList = new List<object>();
+                returnList = new List<string>();
+                for (int rIdx = 0; rIdx < table.Rows.Count; rIdx++)
+                {
+                    if (!rawList.Contains(table.Rows[rIdx][columnName]))
+                    {
+                        rawList.Add(table.Rows[rIdx][columnName]);
+                        returnList.Add(table.Rows[rIdx][columnName].ToString());
+                    }
+                }
+            }
             return returnList;
         }
 
