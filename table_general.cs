@@ -44,6 +44,27 @@ namespace UsefulExtensions
 
     }
 
+    public static class DateTimeGeneralExtensions
+    {
+        public static DateTime GetInvalid(this DateTime dt)
+        {
+            return new DateTime(1111, 1, 1);
+        }
+        public static void SetInvalid(this DateTime dt)
+        {
+            dt = dt.GetInvalid();
+        }
+
+        public static bool IsInvalid(this DateTime dt)
+        {
+            if (dt.Year==1111 && dt.Month==1 && dt.Day == 1)
+            {
+                return true;
+            }
+            return false;
+        }
+
+    }
 
 
     public static class TableGeneralExtensions
@@ -384,5 +405,7 @@ namespace UsefulExtensions
 
 
     }
+
+
 
 }
