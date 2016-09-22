@@ -16,16 +16,19 @@ namespace UsefulExtensions
         public static Dictionary<string, int> CountColumnValues(this System.Data.DataTable source, string column)
         {
             Dictionary<string, int> retVal = new Dictionary<string, int>();
-            foreach (DataRow row in source.Rows)
+            if (source != null)
             {
-                string key = row[column].ToString();
-                if (retVal.Keys.Contains(key))
+                foreach (DataRow row in source.Rows)
                 {
-                    retVal[key]++;
-                }
-                else
-                {
-                    retVal.Add(key, 1);
+                    string key = row[column].ToString();
+                    if (retVal.Keys.Contains(key))
+                    {
+                        retVal[key]++;
+                    }
+                    else
+                    {
+                        retVal.Add(key, 1);
+                    }
                 }
             }
             return retVal;
